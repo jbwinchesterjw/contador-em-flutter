@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -10,68 +10,97 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false, // retira a faixa de debg da tela
       home: HomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int count = 0;
+
   void decrement() {
-    print('Pessoa saiu');
+    setState(() {
+      count--;
+      print(count);
+    });
   }
 
   void increment() {
-    print('Pessoa entrou');
+    setState(() {
+      count++;
+      print(count);
+    });
   }
+
+  bool get isEmpty => count == 0;
+  bool get isFull => count >= 20;
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.blue,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "Pode entrar !",
-            style: TextStyle(
-              fontSize: 30,
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 4,
-            ),
-          ),
-          Text(
-            "0",
-            style: TextStyle(
-              fontSize: 100,
-              color: Colors.white,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: null,
-
-                //style: TextButton.styleFrom(backgroundColor: Colors.black, fixedSize: Size(100, 100)),
-                child: Text(
-                  "Entrou",
-                  style: TextStyle(color: Colors.white, fontSize: 30),
-                ),
+      body: Container(
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('images/img1.jpg'), fit: BoxFit.cover)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              isFull? "Esta lotado" : "Pode entrar !",
+              style: const TextStyle(
+                fontSize: 30,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 4,
               ),
-              TextButton(
-                onPressed: null,
-                //style: TextButton.styleFrom(backgroundColor: Colors.black, fixedSize: Size(100, 100)),
-                child: Text(
-                  "Entrou",
-                  style: TextStyle(color: Colors.white, fontSize: 30),
+            ),
+            Text(
+              count.toString(),
+              style: TextStyle(
+                fontSize: 100,
+                color: isFull ? Colors.red :  Colors.white,
+              ),
+            ),
+            const Padding(padding: EdgeInsets.all(40)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: isEmpty ? null : decrement,
+                  style: TextButton.styleFrom(
+                      backgroundColor: isEmpty ? Colors.white.withOpacity(0.2) : Colors.white60,
+                      fixedSize: const Size(100, 100)),
+                  child: const Text(
+                    "Saiu",
+                    style: TextStyle(color: Colors.black87, fontSize: 20),
+                  ),
                 ),
-              )
-            ],
-          )
-        ],
+                const SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                  onPressed: isFull ? null : increment,
+                  style: TextButton.styleFrom(
+                      backgroundColor: isFull ? Colors.white.withOpacity(0.2) : Colors.white60,
+                      fixedSize: const Size(100, 100)),
+                  child: const Text(
+                    "Entrou",
+                    style: TextStyle(color: Colors.black87, fontSize: 20),
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
